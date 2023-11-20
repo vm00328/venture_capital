@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolios Result</title>
+</head>
+
+<body>
+    <h2>Optimal Portfolio Information</h2>
+    <table border="1">
+        <tr>
+            <th>Venture Capital Funds</th>
+            <th>Portfolio Return</th>
+            <th>Portfolio Risk</th>
+            <th>Return-to-Risk Ratio</th>
+        </tr>
+        <tr>
+            <td>{{ optimal_portfolio.Assets if optimal_portfolio is defined else '' }}</td>
+            <td>{{ optimal_portfolio.Return if optimal_portfolio is defined else '' }}</td>
+            <td>{{ optimal_portfolio.Risk if optimal_portfolio is defined else '' }}</td>
+            <td>{{ optimal_portfolio["Return-to-Risk Ratio"] | round(2) if optimal_portfolio is defined else '' }}</td>
+        </tr>
+    </table>
+    
+    <h2>Simulated Portfolios (based on the input criteria)</h2>
+    <table border="1">
+        <tr>
+            <th>Venture Capital Funds</th>
+            <th>Portfolio Return</th>
+            <th>Portfolio Risk</th>
+            <th>Return-to-Risk Ratio</th>
+        </tr>
+        {% for portfolio in result.filtered_portfolios %}
+            <tr>
+                <td>{{ portfolio.Assets }}</td>
+                <td>{{ portfolio.Return | round(2) }}</td>
+                <td>{{ portfolio.Risk | round(2) }}</td>
+                <td>{{ portfolio["Return-to-Risk Ratio"] | round(2) }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Add styling as needed -->
+
+</body>
+</html>
