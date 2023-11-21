@@ -10,12 +10,14 @@
     <h2>Optimal Portfolio Information</h2>
     <table border="1">
         <tr>
+            <th>Portfolio Selector</th>
             <th>Venture Capital Funds</th>
             <th>Portfolio Return</th>
             <th>Portfolio Risk</th>
             <th>Return-to-Risk Ratio</th>
         </tr>
         <tr>
+            <td><input type="checkbox" name="selected_portfolios" value="{{ optimal_portfolio.Assets }}"></td>
             <td>{{ optimal_portfolio.Assets if optimal_portfolio is defined else '' }}</td>
             <td>{{ optimal_portfolio.Return if optimal_portfolio is defined else '' }}</td>
             <td>{{ optimal_portfolio.Risk if optimal_portfolio is defined else '' }}</td>
@@ -26,6 +28,7 @@
     <h2>Simulated Portfolios (based on the input criteria)</h2>
     <table border="1">
         <tr>
+            <th>Portfolio Selector</th>
             <th>Venture Capital Funds</th>
             <th>Portfolio Return</th>
             <th>Portfolio Risk</th>
@@ -33,6 +36,7 @@
         </tr>
         {% for portfolio in result.filtered_portfolios %}
             <tr>
+                <td><input type="checkbox" name="selected_portfolios" value="{{ portfolio.Assets }}"></td>
                 <td>{{ portfolio.Assets }}</td>
                 <td>{{ portfolio.Return | round(2) }}</td>
                 <td>{{ portfolio.Risk | round(2) }}</td>
@@ -40,7 +44,7 @@
             </tr>
         {% endfor %}
     </table>
-
+    <input type="submit" value="Store Portfolio Selection">
     <!-- Add styling as needed -->
 
 </body>

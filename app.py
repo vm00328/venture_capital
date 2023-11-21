@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -123,7 +123,7 @@ def simulate_portfolio_median_returns(data, n_assets, n_emerging_funds, n_establ
     )
 
     fig.show()
-
+    
     overall_median_moic_across_1000_portfolios = np.nanmedian(portfolios_returns)
 
     plt.figure(figsize = (10, 5))
@@ -148,23 +148,22 @@ def simulate_portfolio_median_returns(data, n_assets, n_emerging_funds, n_establ
             'Return-to-Risk Ratio': ratio_val
         }
         for assets, return_val, risk_val, ratio_val in zip(portfolios_assets, portfolios_returns, portfolios_risks, portfolios_ratios)
-        if (return_val >= minimum_return and return_val <= maximum_return) and (risk_val >= minimum_risk and risk_val <= maximum_risk)
+        if (return_val >= minimum_return) and (risk_val >= minimum_risk and risk_val <= maximum_risk)
     ]
     return {'portfolio_composition': portfolio_composition, 'filtered_portfolios': filtered_portfolios}
     
 @app.route('/', methods = ['GET', 'POST'])
 def index():
-    if request.method == 'POST':         # Get user inputs from the form
+    if request.method == 'POST':         # Retrieving user inputs from the form
         num_funds = int(request.form['num_funds'])
         n_emerging = int(request.form['n_emerging'])
         n_established = int(request.form['n_established'])
         min_return = float(request.form['min_return'])
-        max_return = float(request.form['max_return'])
         min_risk = float(request.form['min_risk'])
         max_risk = float(request.form['max_risk'])
-        # Call the simulate_portfolio_median_returns function with user-entered parameters
+        # Calling the simulate_portfolio_median_returns function with user-entered parameters
         plot_title = '20% Emerging & 80% Established'
-        result = simulate_portfolio_median_returns(post_2000_data, num_funds, n_emerging, n_established, plot_title, minimum_return=min_return, maximum_return=max_return, minimum_risk=min_risk, maximum_risk=max_risk)
+        result = simulate_portfolio_median_returns(post_2000_data, num_funds, n_emerging, n_established, plot_title, minimum_return = min_return, minimum_risk = min_risk, maximum_risk = max_risk)
         filtered_portfolios = result['filtered_portfolios']
 
         optimal_portfolio_index = np.argmax([portfolio['Return-to-Risk Ratio'] for portfolio in filtered_portfolios])
@@ -173,6 +172,13 @@ def index():
         return render_template('result.html', result = result, optimal_portfolio = optimal_portfolio)
 
     return render_template('index.html')
+
+@app.route('/select_portfolios', methods=['POST'])
+def select_portfolios():
+    selected_portfolios = request.form.getlist('selected_portfolios')
+    # Do something with the selected portfolios, for example, print them
+    print("Selected Portfolios:", selected_portfolios)
+    return redirect('/')  # Redirect to the home page or another page as needed
 
 if __name__ == '__main__':
     app.run(debug = True)
